@@ -58,9 +58,9 @@ class DomainCountriesToken extends DomainToken {
 
     // Set the token information.
     if (!empty($domain) && $country_code = $domain->getThirdPartySetting('domain_countries', 'country')) {
-      $country_info = DomainCountriesInfo::getCountryInfo();
-      $country_name = $country_info[$country_code]['name'];
-      $determiner = $country_info[$country_code]['determiner'];
+      $country_info = DomainCountriesInfo::getCountryInfo($country_code);
+      $country_name = $country_info['name'];
+      $determiner = $country_info['determiner'];
 
       foreach ($tokens as $name => $original) {
         if ($name == 'country') {

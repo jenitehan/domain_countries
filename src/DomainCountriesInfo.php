@@ -6,9 +6,11 @@ class DomainCountriesInfo {
   
   /**
    * Country information.
+   * @param $country_code
+   *    Optional string. Two-letter country code of the country info we want.
    */
-  public static function getCountryInfo() {
-    return [
+  public static function getCountryInfo($country_code = '') {
+    $country_info = [
       'gb' => [
         'name' => 'UK',
         'determiner' => 'the',
@@ -38,6 +40,10 @@ class DomainCountriesInfo {
         'determiner' => '',
       ],
     ];
+    if ($country_code) {
+      return $country_info[$country_code];
+    }
+    return $country_info;
   }
   
   /**
