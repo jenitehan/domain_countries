@@ -1,0 +1,69 @@
+<?php
+
+/**
+ * @file
+ * Contains domain_countries.module.
+ */
+
+use Drupal\Core\Routing\RouteMatchInterface;
+use Drupal\domain_countries\DomainCountriesInfo;
+
+/**
+ * Implements hook_help().
+ */
+function domain_countries_help($route_name, RouteMatchInterface $route_match) {
+  switch ($route_name) {
+    // Main module help for the domain_countries module.
+    case 'help.page.domain_countries':
+      $output = '';
+      $output .= '<h3>' . t('About') . '</h3>';
+      $output .= '<p>' . t('Adds country information and tokens for domains.') . '</p>';
+      return $output;
+
+    default:
+  }
+}
+
+/**
+ * Implements hook_form_FORM_ID_alter().
+ */
+function domain_countries_form_domain_edit_form_alter(&$form, \Drupal\Core\Form\FormStateInterface $form_state, $form_id) {
+  $domain = $form_state->getFormObject()->getEntity();
+  
+  $form['country'] = [
+    '#type' => 'select',
+    '#title' => t('Country'),
+    '#description' => t('The country associated with this domain.'),
+    '#options' => DomainCountriesInfo::getCountryOptions(),
+    '#empty_option' => t('- None -'),
+    '#default_value' => $domain->getThirdPartySetting('domain_countries', 'country'),
+  ];
+  
+  $form['#entity_builders'][] = 'domain_countries_form_builder';
+}
+
+/**
+ * Entity builder for Domain entities.
+ */
+function domain_countries_form_builder($entity_type, \Drupal\domain\Entity\Domain $domain, &$form, \Drupal\Core\Form\FormStateInterface $form_state) {
+  if ($form_state->getValue('country')) {
+    $domain->setThirdPartySetting('domain_countries', 'country', $form_state->getValue('country'));
+    return;
+  }
+ 
+  $domain->unsetThirdPartySetting('domain_countries', 'country');
+}
+
+/**
+ * Implements hook_token_info().
+ */
+function domain_countries_token_info() {
+  return \Drupal::service('domain_countries.token')->getTokenInfo();
+}
+
+/**
+ * Implements hook_tokens().
+ */
+function domain_countries_tokens($type, $tokens, array $data, array $options, \Drupal\Core\Render\BubbleableMetadata $bubbleable_metadata) {
+  return \Drupal::service('domain_countries.token')->getTokens($type, $tokens, $data, $options, $bubbleable_metadata);
+}

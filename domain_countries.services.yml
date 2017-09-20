@@ -1,0 +1,6 @@
+services:
+  domain_countries.token:
+    class: Drupal\domain_countries\DomainCountriesToken
+    tags:
+      - { name: persist }
+    arguments: ['@domain.loader', '@domain.negotiator']

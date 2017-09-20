@@ -1,0 +1,7 @@
+name: Domain Countries
+type: module
+description: Adds country information and tokens for domains.
+core: 8.x
+package: Domain
+dependencies:
+  - domain
