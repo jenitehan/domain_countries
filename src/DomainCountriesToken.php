@@ -22,6 +22,10 @@ class DomainCountriesToken extends DomainToken {
       'name' => $this->t('Domain Country'),
       'description' => $this->t('The domain\'s country.'),
     );
+    $info['tokens']['domain']['country-determiner'] = array(
+      'name' => $this->t('Domain Country with Determiner'),
+      'description' => $this->t('The domain\'s country prefixed with a determiner if necessary.'),
+    );
 
     return $info;
   }
@@ -53,32 +57,23 @@ class DomainCountriesToken extends DomainToken {
     }
 
     // Set the token information.
-    if (!empty($domain)) {
-      $callbacks = $this->getCallbacks();
+    if (!empty($domain) && $country_code = $domain->getThirdPartySetting('domain_countries', 'country')) {
       $country_info = DomainCountriesInfo::getCountryInfo();
+      $country_name = $country_info[$country_code]['name'];
+      $determiner = $country_info[$country_code]['determiner'];
+
       foreach ($tokens as $name => $original) {
-        if (isset($callbacks[$name])) {
-          $code = $domain->getThirdPartySetting('domain_countries', $name);
-          $replacements[$original] = $country_info[$code]['name'];
-          $bubbleable_metadata->addCacheableDependency($domain);
+        if ($name == 'country') {
+          $replacements[$original] = $country_name;
         }
+        if ($name == 'country-determiner') {
+          $replacements[$original] = $determiner ? $determiner . ' ' . $country_name : $country_name;
+        }
+        $bubbleable_metadata->addCacheableDependency($domain);
       }
     }
 
     return $replacements;
-  }
-
-  /**
-   * Maps tokens to their entity callbacks.
-   *
-   * We assume that the token will call an instance of DomainInterface.
-   *
-   * @return array
-   */
-  public function getCallbacks() {
-    return [
-      'country' => 'country',
-    ];
   }
   
 }
