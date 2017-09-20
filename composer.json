@@ -1,0 +1,14 @@
+{
+  "name": "drupal/domain_countries",
+  "type": "drupal-module",
+  "description": "Adds country information and tokens for domains.",
+  "keywords": ["Drupal"],
+  "license": "GPL-2.0+",
+  "homepage": "https://www.drupal.org/project/domain_countries",
+  "minimum-stability": "dev",
+  "support": {
+    "issues": "https://www.drupal.org/project/issues/domain_countries",
+    "source": "http://cgit.drupalcode.org/domain_countries"
+  },
+  "require": { }
+}
